@@ -32,7 +32,7 @@ def polynomial(points, XtoFind):
     a, b = makePolynomialMat(points)
     coefficients = gaussSeidelIter(a, b)
     print("*** Polynomial_Interpolation ***")
-    print("f(" + str(XtoFind) + ") = ", getCoefficientsCalcY(coefficients, XtoFind))
+    print("Approximate value = ", getCoefficientsCalcY(coefficients, XtoFind))
     print("---------------------------------")
 
 
@@ -141,6 +141,7 @@ def lagrange(points, XtoFind):
 def neville(points, XtoFind):
     if len(points) < 4:
         print("Can't use Neville's algorithm with less than 4 points...")
+        return
     print("*** Neville's_Algorithm ***")
     print("Approximate value = ", recurssiveNeville(points, 0, len(points) - 1, XtoFind))
     print("---------------------------------")
@@ -174,23 +175,17 @@ def driver():
 
     XtoFind = 2.5
 
-    linear(points, XtoFind)
-
     # points = [[1, 0.8415],
     #           [2, 0.9093],
     #           [3, 0.1411]]
     #
     # XtoFind = 2.5
 
-    polynomial(points, XtoFind)
-
     # points = [[1, 1],
     #           [2, 0],
     #           [4, 1.5]]
     #
     # XtoFind = 3
-
-    lagrange(points, XtoFind)
 
     # points = [[1, 0],
     #           [1.2, 0.112463],
@@ -199,7 +194,27 @@ def driver():
     #
     # XtoFind = 1.28
 
-    neville(points, XtoFind)
+    inp = input("Please Enter: \n0 for Linear Interpolation \n1 for Polynomial Interpolation"
+                "\n2 for Lagrange Interpolation \n3 for Neville's Algorithm \nelse for all\n->>>  ")
+
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("Points = ", points)
+    print("X = ", XtoFind)
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+
+    if inp is '0':
+        linear(points, XtoFind)
+    elif inp is '1':
+        polynomial(points, XtoFind)
+    elif inp is '2':
+        lagrange(points, XtoFind)
+    elif inp is '3':
+        neville(points, XtoFind)
+    else:
+        linear(points, XtoFind)
+        polynomial(points, XtoFind)
+        lagrange(points, XtoFind)
+        neville(points, XtoFind)
 
 
 driver()
