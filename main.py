@@ -10,6 +10,11 @@
 
 
 def linear(points, XtoFind):
+    """
+    :param points: get array of points
+    :param XtoFind: x we want to find
+    :return: Approach in the Linear method
+    """
     p1 = points[0]
     for p2 in range(1, len(points)):
         if p1[0] <= XtoFind <= points[p2][0]:
@@ -21,6 +26,12 @@ def linear(points, XtoFind):
 
 
 def makeLine(point1, point2, XtoFind):
+    """
+    :param point1: get point one
+    :param point2: get point two
+    :param XtoFind: x we want to find
+    :return: Approximate value between two points
+    """
     y1 = point1[1]
     y2 = point2[1]
     x1 = point1[0]
@@ -29,6 +40,11 @@ def makeLine(point1, point2, XtoFind):
 
 
 def polynomial(points, XtoFind):
+    """
+    :param points: array of points
+    :param XtoFind: x we want to find
+    :return: Approach in the Polynomial method
+    """
     a, b = makePolynomialMat(points)
     coefficients = gaussSeidelIter(a, b)
     print("*** Polynomial_Interpolation ***")
@@ -37,6 +53,11 @@ def polynomial(points, XtoFind):
 
 
 def getCoefficientsCalcY(coefficients, XtoFind):
+    """
+    :param coefficients: coefficients of poly
+    :param XtoFind: x we want to find
+    :return: Approximate value in the Polynomial method
+    """
     mySum = 0
     for x in range(len(coefficients)):
         mySum += coefficients[x][0] * (XtoFind ** x)
@@ -85,6 +106,10 @@ def makeMatrics(row, col=1):
 
 
 def makePolynomialMat(points):
+    """
+    :param points: array of points
+    :return: Polynomial Mat
+    """
     size = len(points)
     newMat = makeMatrics(size, size)
     newB = makeMatrics(size)
@@ -118,6 +143,11 @@ def isolateVariables(a, b):
 
 
 def lagrange(points, XtoFind):
+    """
+    :param points: array of points
+    :param XtoFind: x we want to find
+    :return: Approach in the Lagrange method
+    """
     i = 0
     mySum = 0
     while i < len(points):
@@ -139,6 +169,11 @@ def lagrange(points, XtoFind):
 
 
 def neville(points, XtoFind):
+    """
+    :param points: array of points
+    :param XtoFind: x we want to find
+    :return: Approach in the Neville method
+    """
     if len(points) < 4:
         print("Can't use Neville's algorithm with less than 4 points...")
         return
@@ -149,11 +184,11 @@ def neville(points, XtoFind):
 
 def recurssiveNeville(points, m, n, XtoFind):
     """
-    :param points:
+    :param points: array of points
     :param m: start of range
     :param n: end of range
-    :param XtoFind:
-    :return:
+    :param XtoFind: x we want to find
+    :return: Approximate value in the Neville method
     """
     # stop condition
     if m is n:
