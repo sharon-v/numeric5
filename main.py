@@ -46,6 +46,14 @@ def polynomial(points, XtoFind):
     :return: Approach in the Polynomial method
     """
     a, b = makePolynomialMat(points)
+    # check
+    copyA = copyMat(a)
+    copyB = copyMat(b)
+    copyA, copyB = createDominantDiagonal(copyA, copyB)
+    if (copyA is not None) and (copyB is not None):
+        a = copyA
+        b = copyB
+    #
     coefficients = gaussSeidelIter(a, b)
     print("*** Polynomial_Interpolation ***")
     print("Approximate value = ", getCoefficientsCalcY(coefficients, XtoFind))
@@ -112,7 +120,7 @@ def makePolynomialMat(points):
     """
     size = len(points)
     newMat = makeMatrics(size, size)
-    newB = makeMatrics(size)
+    newB = makeMatrics(size, size)
     for i in range(size):
         xi = points[i][0]
         for j in range(size):
@@ -199,6 +207,103 @@ def recurssiveNeville(points, m, n, XtoFind):
             ((XtoFind - xn) * recurssiveNeville(points, m, n - 1, XtoFind))) / (xn - xm)
 
 
+# dominant diagonal part
+
+def copyMat(A):
+    """
+    :param A: get matrix
+    :return: the same matrix
+    """
+    B = makeMatrics(len(A), len(A[0]))
+    for i in range(len(A)):
+        for j in range(len(A[0])):
+            B[i][j] = A[i][j]
+    return B
+
+
+def createDominantDiagonal(A, b=None):
+    """
+    :param A: get matrix
+    :param b: get result vector
+    :return: matrix with dominant diagonal
+    """
+    max = 0
+    maxIndex = 0
+    sum = 0
+    for i in range(len(A)):
+        for j in range(len(A)):
+            sum += abs(A[i][j])
+            if abs(A[i][j]) > max:
+                max = abs(A[i][j])
+                maxIndex = j
+        if (sum - max) <= max:
+            A = manualSwapCol(A , maxIndex, i)
+        else:
+            max = 0
+            maxIndex = 0
+            for j in range(len(A)):
+                sum += abs(A[j][i])
+                if abs(A[j][i]) > max:
+                    max = abs(A[j][i])
+                    maxIndex = j
+            if rowSum(A[j]) - max <= max:
+                A, b = manualSwapRow(A,b, i, maxIndex)
+            else:
+                print("ERROR - no dominant diagonal")
+                return None, None
+    return A, b
+
+
+def manualSwapRow(a, b, r1, r2):
+    """
+    manaul rows exchange (without e)
+    :param a: get matrix
+    :param b: get result vector
+    :param r1: get number of row to replace
+    :param r2: get number of row to replace
+    :return: matrix and result vector after replace rows
+    """
+
+    if r2 < len(a) and r1 < len(a):
+        temp = a[r1]
+        a[r1] = a[r2]
+        a[r2] = temp
+        if b is not None:
+            temp = b[r1]
+            b[r1] = b[r2]
+            b[r2] = temp
+    return a, b
+
+
+def manualSwapCol(a, c1, c2):
+    """
+    :param a: get matrix
+    :param c1: get number of col to replace
+    :param c2: get number of col to replace
+    :return: matrix after replace cols
+    """
+    if c2 < len(a) and c1 < len(a):
+        for i in range(len(a)):
+            temp = a[i][c1]
+            a[i][c1] = a[i][c2]
+            a[i][c2] = temp
+    return a
+
+
+def rowSum(line):
+    """
+    :param line: A list od numbers - line for the matrix
+    :return: the sum of all the numbers in abs  in the list
+    """
+    lineSum = 0
+    for index in range(len(line)):  # run over all the line`s members
+        lineSum += abs(line[index])
+    return lineSum
+
+
+# end dominant part
+
+
 def driver():
     points = [[0, 0],
               [1, 0.8415],
@@ -217,8 +322,8 @@ def driver():
     # XtoFind = 2.5
 
     # points = [[1, 1],
-    #           [2, 0],
-    #           [4, 1.5]]
+    #           [2, 4],
+    #           [3, 9]]
     #
     # XtoFind = 3
 
